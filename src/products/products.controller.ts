@@ -9,6 +9,7 @@ import {
 	Delete,
 	Param,
 	Patch,
+	Query,
 } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { FileInterceptor } from "@nestjs/platform-express";
@@ -25,6 +26,7 @@ import { imageStorage } from "utils/imageStorage";
 import { AttributeIdValuePair } from "types/attribute-value-pair.interface";
 import { UpdateProductControllerDto } from "./dto/updateProduct.dto";
 import { CreateProductControllerDto } from "./dto/createProductController.dto";
+import { PaginationDto } from "./dto/pagination.dto";
 
 @ApiTags("Products")
 @Controller("products")
@@ -37,9 +39,9 @@ export class ProductsController {
 	@ApiOperation({ description: "Getting all products" })
 	@ApiResponse({ type: [Product] })
 	@Get()
-	async getAll() {
+	async getAll(@Query() queryParams: PaginationDto) {
 		try {
-			const products = await this.productsService.getAllProducts();
+			const products = await this.productsService.getAllProducts(queryParams);
 			return products;
 		} catch (error) {
 			throw new InternalServerErrorException("Error while fetching all products");
@@ -74,7 +76,7 @@ export class ProductsController {
 	@ApiResponse({ type: [Product] })
 	@UseInterceptors(FileInterceptor("file", imageStorage("excel")))
 	@Post("/excel")
-	async loadProductsFromXLSX(@UploadedFile() file: Express.Multer.File) {
+	async loadProductsFromTable(@UploadedFile() file: Express.Multer.File) {
 		try {
 			const workbook = XLSX.readFile(
 				path.join(__dirname, "..", "..", "..", "uploads", "excel", file.filename)
@@ -83,7 +85,7 @@ export class ProductsController {
 			const xlData = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
 			console.log(xlData);
 		} catch (error) {
-			throw new InternalServerErrorException("Error while adding product using xlsx file");
+			throw new InternalServerErrorException("Error while adding product from table");
 		}
 	}
 

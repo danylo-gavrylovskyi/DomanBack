@@ -14,6 +14,7 @@ import { Product } from "src/products/product.model";
 
 interface SubcategoryCreationAttr {
 	title: string;
+	slug: string;
 	image: string;
 	categoryId: number;
 }
@@ -33,6 +34,10 @@ export class Subcategory extends Model<Subcategory, SubcategoryCreationAttr> {
 	@ApiProperty({ example: "ЗМІШУВАЧІ", description: "Subcategory title" })
 	@Column({ type: DataType.STRING, allowNull: false, unique: true })
 	title: string;
+
+	@ApiProperty({ example: "zmishyvachi", description: "Subcategory slug" })
+	@Column({ type: DataType.STRING, allowNull: false, unique: true })
+	slug: string;
 
 	@ApiProperty({
 		example: "62771c51-3b8b-453a-9aca-2cb439c0b5b6.jpg",

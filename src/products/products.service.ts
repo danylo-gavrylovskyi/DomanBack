@@ -6,13 +6,18 @@ import { Product } from "./product.model";
 import { CreateProductServiceDto } from "./dto/createProductService.dto";
 import { UpdateProductServiceDto } from "./dto/updateProduct.dto";
 import { deleteImage } from "utils/deleteImage";
+import { PaginationDto } from "./dto/pagination.dto";
 
 @Injectable()
 export class ProductsService {
 	constructor(@InjectModel(Product) private productsRepository: typeof Product) {}
 
-	getAllProducts() {
-		return this.productsRepository.findAll({ include: { all: true } });
+	getAllProducts({ page = "1", perPage = "1" }: PaginationDto) {
+		return this.productsRepository.findAndCountAll({
+			limit: +perPage,
+			offset: (+page - 1) * +perPage,
+			include: { all: true },
+		});
 	}
 
 	addProduct(dto: CreateProductServiceDto) {

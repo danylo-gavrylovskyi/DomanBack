@@ -43,7 +43,10 @@ export class CategoriesController {
 	@ApiResponse({ type: Category })
 	@Post()
 	@UseInterceptors(FileInterceptor("image", imageStorage("categoriesImages")))
-	async add(@Body() dto: { title: string }, @UploadedFile() file: Express.Multer.File) {
+	async add(
+		@Body() dto: { title: string; slug: string },
+		@UploadedFile() file: Express.Multer.File
+	) {
 		try {
 			const category = await this.categoriesService.addCategory({
 				...dto,

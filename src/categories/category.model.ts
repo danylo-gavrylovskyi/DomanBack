@@ -4,6 +4,7 @@ import { Subcategory } from "src/subcategories/subcategory.model";
 
 interface CategoryCreationAttr {
 	title: string;
+	slug: string;
 	image: string;
 }
 
@@ -22,6 +23,10 @@ export class Category extends Model<Category, CategoryCreationAttr> {
 	@ApiProperty({ example: "ЗМІШУВАЧІ", description: "Category title" })
 	@Column({ type: DataType.STRING, allowNull: false, unique: true })
 	title: string;
+
+	@ApiProperty({ example: "zmishyvachi", description: "Subcategory slug" })
+	@Column({ type: DataType.STRING, allowNull: false, unique: true })
+	slug: string;
 
 	@ApiProperty({
 		example: "62771c51-3b8b-453a-9aca-2cb439c0b5b6.jpg",
