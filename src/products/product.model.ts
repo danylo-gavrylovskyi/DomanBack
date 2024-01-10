@@ -43,7 +43,7 @@ export class Product extends Model<Product, ProductCreationAttr> {
 	title: string;
 
 	@ApiProperty({ example: "smesitel-dlya-kuhni", description: "Product slug" })
-	@Column({ type: DataType.STRING, allowNull: false, unique: true })
+	@Column({ type: DataType.STRING, allowNull: true, unique: true })
 	slug: string;
 
 	@ApiProperty({
@@ -54,14 +54,14 @@ export class Product extends Model<Product, ProductCreationAttr> {
 	description: string;
 
 	@ApiProperty({ example: 236, description: "Product quantity" })
-	@Column({ type: DataType.INTEGER, allowNull: false, unique: false })
+	@Column({ type: DataType.INTEGER, allowNull: true, unique: false })
 	quantity: number;
 
 	@ApiProperty({
 		example: "62771c51-3b8b-453a-9aca-2cb439c0b5b6.jpg",
 		description: "Product image",
 	})
-	@Column({ type: DataType.STRING, allowNull: false, unique: true })
+	@Column({ type: DataType.STRING, allowNull: true, unique: true })
 	image: string;
 
 	@ApiProperty({ example: 1289, description: "Product price" })
@@ -70,7 +70,7 @@ export class Product extends Model<Product, ProductCreationAttr> {
 
 	@ApiProperty({ example: 1, description: "To which subcategory this product belongs to" })
 	@ForeignKey(() => Subcategory)
-	@Column({ type: DataType.INTEGER, allowNull: false, unique: false })
+	@Column({ type: DataType.INTEGER, allowNull: true, unique: false })
 	subcategoryId: number;
 
 	@BelongsTo(() => Subcategory)

@@ -1,6 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 
+import * as path from "path";
+import * as XLSX from "xlsx";
+
 import { Product } from "./product.model";
 
 import { CreateProductServiceDto } from "./dto/createProductService.dto";
@@ -12,7 +15,7 @@ import { PaginationDto } from "./dto/pagination.dto";
 export class ProductsService {
 	constructor(@InjectModel(Product) private productsRepository: typeof Product) {}
 
-	getAllProducts({ page = "1", perPage = "1" }: PaginationDto) {
+	getProductsWithPagination({ page = "1", perPage = "2" }: PaginationDto) {
 		return this.productsRepository.findAndCountAll({
 			limit: +perPage,
 			offset: (+page - 1) * +perPage,
@@ -20,8 +23,40 @@ export class ProductsService {
 		});
 	}
 
+	getAllProducts() {
+		return this.productsRepository.findAll({ include: { all: true } });
+	}
+
 	addProduct(dto: CreateProductServiceDto) {
 		return this.productsRepository.create(dto);
+	}
+
+	async loadProductsViaExcel(filename: string) {
+		const workbook = XLSX.readFile(
+			path.join(__dirname, "..", "..", "..", "uploads", "excel", filename)
+		);
+		const sheetNameList = workbook.SheetNames;
+		const xlData: any = XLSX.utils.sheet_to_json(workbook.Sheets[sheetNameList[0]]);
+
+		for (const data of xlData) {
+			data.article = String(data.article);
+
+			const [findedProduct, isCreated] = await this.productsRepository.findOrCreate({
+				where: { article: data.article },
+				defaults: {
+					title: data.title,
+					price: data.price,
+					quantity: null,
+					slug: null,
+					image: null,
+					subcategoryId: null,
+				},
+			});
+
+			if (!isCreated) {
+				this.updateProduct(findedProduct.id, { price: data.price });
+			}
+		}
 	}
 
 	async deleteProduct(id: number) {

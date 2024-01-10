@@ -13,8 +13,6 @@ import {
 } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { FileInterceptor } from "@nestjs/platform-express";
-import * as XLSX from "xlsx";
-import * as path from "path";
 
 import { ProductsService } from "./products.service";
 import { ProductAttributeService } from "src/product-attribute/product-attribute.service";
@@ -38,13 +36,27 @@ export class ProductsController {
 
 	@ApiOperation({ description: "Getting all products" })
 	@ApiResponse({ type: [Product] })
-	@Get()
-	async getAll(@Query() queryParams: PaginationDto) {
+	@Get("/admin")
+	async getAll() {
 		try {
-			const products = await this.productsService.getAllProducts(queryParams);
+			const products = await this.productsService.getAllProducts();
 			return products;
 		} catch (error) {
 			throw new InternalServerErrorException("Error while fetching all products");
+		}
+	}
+
+	@ApiOperation({ description: "Getting all products with pagination" })
+	@ApiResponse({ type: [Product] })
+	@Get()
+	async getAllWithPagination(@Query() queryParams: PaginationDto) {
+		try {
+			const products = await this.productsService.getProductsWithPagination(queryParams);
+			return products;
+		} catch (error) {
+			throw new InternalServerErrorException(
+				"Error while fetching all products with pagination"
+			);
 		}
 	}
 
@@ -78,12 +90,7 @@ export class ProductsController {
 	@Post("/excel")
 	async loadProductsFromTable(@UploadedFile() file: Express.Multer.File) {
 		try {
-			const workbook = XLSX.readFile(
-				path.join(__dirname, "..", "..", "..", "uploads", "excel", file.filename)
-			);
-			const sheet_name_list = workbook.SheetNames;
-			const xlData = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
-			console.log(xlData);
+			this.productsService.loadProductsViaExcel(file.filename);
 		} catch (error) {
 			throw new InternalServerErrorException("Error while adding product from table");
 		}
@@ -142,7 +149,6 @@ export class ProductsController {
 			}
 			return product;
 		} catch (error) {
-			console.log(error);
 			throw new InternalServerErrorException("Error while editing product");
 		}
 	}
