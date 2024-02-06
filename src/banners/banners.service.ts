@@ -20,7 +20,7 @@ export class BannersService {
 		const end = start + +perPage;
 
 		const paginatedBanners = allBanners.slice(start, end);
-		return paginatedBanners;
+		return { rows: paginatedBanners, count: allBanners.length };
 	}
 
 	deleteBanner(bannerUrl: string) {
