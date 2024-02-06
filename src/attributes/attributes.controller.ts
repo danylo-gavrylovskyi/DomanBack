@@ -5,14 +5,18 @@ import {
 	Get,
 	HttpException,
 	HttpStatus,
+	InternalServerErrorException,
 	Param,
 	Post,
+	Query,
 } from "@nestjs/common";
+import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 import { AttributesService } from "./attributes.service";
-import { CreateAttributeDto } from "./createAttribute.dto";
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+
 import { Attribute } from "./attribute.model";
+
+import { PaginationDto } from "src/products/dto/pagination.dto";
 
 @ApiTags("Attributes")
 @Controller("attributes")
@@ -30,6 +34,20 @@ export class AttributesController {
 			throw new HttpException(
 				"Error while getting all attributes",
 				HttpStatus.INTERNAL_SERVER_ERROR
+			);
+		}
+	}
+
+	@ApiOperation({ description: "Getting all attributes with pagination" })
+	@ApiResponse({ type: [Attribute] })
+	@Get("/pagination")
+	async getAllWithPagination(@Query() queryParams: PaginationDto) {
+		try {
+			const attributes = await this.attributesService.getAttributesWithPagination(queryParams);
+			return attributes;
+		} catch (error) {
+			throw new InternalServerErrorException(
+				"Error while fetching all attributes with pagination"
 			);
 		}
 	}

@@ -90,7 +90,8 @@ export class ProductsController {
 	@Post("/excel")
 	async loadProductsFromTable(@UploadedFile() file: Express.Multer.File) {
 		try {
-			this.productsService.loadProductsViaExcel(file.filename);
+			const products: Product[] = await this.productsService.loadProductsViaExcel(file.filename);
+			return products;
 		} catch (error) {
 			throw new InternalServerErrorException("Error while adding product from table");
 		}

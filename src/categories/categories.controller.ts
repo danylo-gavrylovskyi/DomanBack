@@ -11,12 +11,18 @@ import {
 	UploadedFile,
 	Delete,
 	Patch,
+	Query,
+	InternalServerErrorException,
 } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
 
 import { CategoriesService } from "./categories.service";
+
+import { PaginationDto } from "src/products/dto/pagination.dto";
+
 import { Category } from "./category.model";
-import { FileInterceptor } from "@nestjs/platform-express";
 import { Subcategory } from "src/subcategories/subcategory.model";
+
 import { imageStorage } from "utils/imageStorage";
 
 @ApiTags("Categories")
@@ -35,6 +41,20 @@ export class CategoriesController {
 			throw new HttpException(
 				"Error while fetching categories",
 				HttpStatus.INTERNAL_SERVER_ERROR
+			);
+		}
+	}
+
+	@ApiOperation({ description: "Getting all categories with pagination" })
+	@ApiResponse({ type: [Category] })
+	@Get("/pagination")
+	async getAllWithPagination(@Query() queryParams: PaginationDto) {
+		try {
+			const categories = await this.categoriesService.getCategoriesWithPagination(queryParams);
+			return categories;
+		} catch (error) {
+			throw new InternalServerErrorException(
+				"Error while fetching all categories with pagination"
 			);
 		}
 	}

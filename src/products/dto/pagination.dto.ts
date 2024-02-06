@@ -6,4 +6,7 @@ export class PaginationDto {
 
 	@IsOptional()
 	readonly perPage?: string;
+
+	@IsOptional()
+	readonly inputValue?: string;
 }

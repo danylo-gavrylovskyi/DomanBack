@@ -1,10 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
+import { Op } from "sequelize";
 
 import { Category } from "./category.model";
-import { CreateCategoryDto } from "./dto/createCategory.dto";
 import { Subcategory } from "src/subcategories/subcategory.model";
+
+import { CreateCategoryDto } from "./dto/createCategory.dto";
 import { EditCategoryDto } from "./dto/editCategory.dto";
+import { PaginationDto } from "src/products/dto/pagination.dto";
+
 import { deleteImage } from "utils/deleteImage";
 
 @Injectable()
@@ -16,6 +20,14 @@ export class CategoriesService {
 
 	getAllCategories() {
 		return this.categoryRepository.findAll({ include: { all: true } });
+	}
+
+	getCategoriesWithPagination({ page = "1", perPage = "4", inputValue = "" }: PaginationDto) {
+		return this.categoryRepository.findAndCountAll({
+			limit: +perPage,
+			offset: (+page - 1) * +perPage,
+			include: { all: true },
+		});
 	}
 
 	addCategory(dto: CreateCategoryDto) {

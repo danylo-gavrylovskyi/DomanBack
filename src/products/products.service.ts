@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
+import { Op } from "sequelize";
 
 import * as path from "path";
 import * as XLSX from "xlsx";
@@ -8,18 +9,24 @@ import { Product } from "./product.model";
 
 import { CreateProductServiceDto } from "./dto/createProductService.dto";
 import { UpdateProductServiceDto } from "./dto/updateProduct.dto";
-import { deleteImage } from "utils/deleteImage";
 import { PaginationDto } from "./dto/pagination.dto";
+
+import { deleteImage } from "utils/deleteImage";
 
 @Injectable()
 export class ProductsService {
 	constructor(@InjectModel(Product) private productsRepository: typeof Product) {}
 
-	getProductsWithPagination({ page = "1", perPage = "2" }: PaginationDto) {
+	getProductsWithPagination({ page = "1", perPage = "4", inputValue = "" }: PaginationDto) {
 		return this.productsRepository.findAndCountAll({
 			limit: +perPage,
 			offset: (+page - 1) * +perPage,
 			include: { all: true },
+			where: {
+				title: {
+					[Op.iLike]: `%${inputValue}%`,
+				},
+			},
 		});
 	}
 
@@ -36,7 +43,7 @@ export class ProductsService {
 			path.join(__dirname, "..", "..", "..", "uploads", "excel", filename)
 		);
 		const sheetNameList = workbook.SheetNames;
-		const xlData: any = XLSX.utils.sheet_to_json(workbook.Sheets[sheetNameList[0]]);
+		const xlData: Product[] = XLSX.utils.sheet_to_json(workbook.Sheets[sheetNameList[0]]);
 
 		for (const data of xlData) {
 			data.article = String(data.article);
@@ -57,11 +64,13 @@ export class ProductsService {
 				this.updateProduct(findedProduct.id, { price: data.price });
 			}
 		}
+
+		return xlData;
 	}
 
 	async deleteProduct(id: number) {
 		const product = await this.productsRepository.findOne({ where: { id } });
-		deleteImage("productsImages", product.image);
+		product.image && deleteImage("productsImages", product.image);
 		return this.productsRepository.destroy({ where: { id } });
 	}
 

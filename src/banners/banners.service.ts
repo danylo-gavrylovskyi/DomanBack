@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import * as fs from "fs";
 import * as path from "path";
+import { PaginationDto } from "src/products/dto/pagination.dto";
 
 @Injectable()
 export class BannersService {
@@ -9,6 +10,17 @@ export class BannersService {
 			path.join(__dirname, "..", "..", "..", "uploads", "banners")
 		);
 		return bannersNames;
+	}
+
+	async getBannersWithPagination({ page = "1", perPage = "4", inputValue = "" }: PaginationDto) {
+		const pathToFolder = path.join(__dirname, "..", "..", "..", "uploads", "banners");
+		const allBanners = await fs.promises.readdir(pathToFolder);
+
+		const start = (+page - 1) * +perPage;
+		const end = start + +perPage;
+
+		const paginatedBanners = allBanners.slice(start, end);
+		return paginatedBanners;
 	}
 
 	deleteBanner(bannerUrl: string) {

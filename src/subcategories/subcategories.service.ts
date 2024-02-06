@@ -4,7 +4,9 @@ import * as fs from "fs";
 import * as path from "path";
 
 import { Subcategory } from "./subcategory.model";
+
 import { CreateSubcategoryDto } from "./dto/createSubcategory.dto";
+import { PaginationDto } from "src/products/dto/pagination.dto";
 
 @Injectable()
 export class SubcategoriesService {
@@ -12,6 +14,14 @@ export class SubcategoriesService {
 
 	getAllSubcategories() {
 		return this.subcategoryRepository.findAll({ include: { all: true } });
+	}
+
+	getSubcategoriesWithPagination({ page = "1", perPage = "4", inputValue = "" }: PaginationDto) {
+		return this.subcategoryRepository.findAndCountAll({
+			limit: +perPage,
+			offset: (+page - 1) * +perPage,
+			include: { all: true },
+		});
 	}
 
 	addSubcategory(dto: CreateSubcategoryDto) {

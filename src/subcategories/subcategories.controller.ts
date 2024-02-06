@@ -5,19 +5,25 @@ import {
 	Get,
 	HttpException,
 	HttpStatus,
+	InternalServerErrorException,
 	Param,
 	Patch,
 	Post,
+	Query,
 	UploadedFile,
 	UseInterceptors,
 } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 import { SubcategoriesService } from "./subcategories.service";
+
 import { Subcategory } from "./subcategory.model";
+
 import { CreateSubcategoryDto } from "./dto/createSubcategory.dto";
+import { PaginationDto } from "src/products/dto/pagination.dto";
+
 import { imageStorage } from "utils/imageStorage";
-import { FileInterceptor } from "@nestjs/platform-express";
 
 @ApiTags("Subcategories")
 @Controller("subcategories")
@@ -35,6 +41,22 @@ export class SubcategoriesController {
 			throw new HttpException(
 				"Error while fetching subcategories",
 				HttpStatus.INTERNAL_SERVER_ERROR
+			);
+		}
+	}
+
+	@ApiOperation({ description: "Getting all subcategories with pagination" })
+	@ApiResponse({ type: [Subcategory] })
+	@Get("/pagination")
+	async getAllWithPagination(@Query() queryParams: PaginationDto) {
+		try {
+			const subcategories = await this.subcategoriesService.getSubcategoriesWithPagination(
+				queryParams
+			);
+			return subcategories;
+		} catch (error) {
+			throw new InternalServerErrorException(
+				"Error while fetching all subcategories with pagination"
 			);
 		}
 	}
