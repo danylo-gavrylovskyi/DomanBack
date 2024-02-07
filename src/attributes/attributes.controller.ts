@@ -72,7 +72,6 @@ export class AttributesController {
 			await this.attributesService.deleteAttribute(dto.id);
 			return dto.id;
 		} catch (error) {
-			console.log(error);
 			throw new HttpException(
 				"Error while deleting attribute",
 				HttpStatus.INTERNAL_SERVER_ERROR

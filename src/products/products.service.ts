@@ -53,7 +53,7 @@ export class ProductsService {
 				defaults: {
 					title: data.title,
 					price: data.price,
-					quantity: null,
+					quantity: data.quantity,
 					slug: null,
 					image: null,
 					subcategoryId: null,
@@ -61,7 +61,7 @@ export class ProductsService {
 			});
 
 			if (!isCreated) {
-				this.updateProduct(findedProduct.id, { price: data.price });
+				this.updateProduct(findedProduct.id, { price: data.price, quantity: data.quantity });
 			}
 		}
 

@@ -20,6 +20,7 @@ interface ProductCreationAttr {
 	image: string;
 	price: number;
 	subcategoryId: number;
+	isPopular: boolean;
 }
 
 @Table({ tableName: "products" })
@@ -67,6 +68,10 @@ export class Product extends Model<Product, ProductCreationAttr> {
 	@ApiProperty({ example: 1289, description: "Product price" })
 	@Column({ type: DataType.DECIMAL, allowNull: false, unique: false })
 	price: number;
+
+	@ApiProperty({ example: true, description: "Is this product popular" })
+	@Column({ type: DataType.BOOLEAN, allowNull: false, unique: false, defaultValue: false })
+	isPopular: boolean;
 
 	@ApiProperty({ example: 1, description: "To which subcategory this product belongs to" })
 	@ForeignKey(() => Subcategory)

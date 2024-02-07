@@ -14,6 +14,9 @@ export class UpdateProductControllerDto {
 	@ApiProperty({ example: 1289, description: "Product price" })
 	readonly price?: number;
 
+	@ApiProperty({ example: true, description: "Is this product popular" })
+	readonly isPopular?: boolean;
+
 	@ApiProperty({ example: 1, description: "To which subcategory this product belongs to" })
 	readonly subcategoryId?: number;
 
