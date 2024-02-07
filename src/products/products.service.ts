@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
-import { Op } from "sequelize";
+import { FindOptions, Op } from "sequelize";
 
 import * as path from "path";
 import * as XLSX from "xlsx";
@@ -30,8 +30,11 @@ export class ProductsService {
 		});
 	}
 
-	getAllProducts() {
-		return this.productsRepository.findAll({ include: { all: true } });
+	getAllProducts(findOptions: FindOptions<Product>) {
+		return this.productsRepository.findAll({
+			include: { all: true },
+			...findOptions,
+		});
 	}
 
 	addProduct(dto: CreateProductServiceDto) {

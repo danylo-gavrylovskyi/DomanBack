@@ -13,6 +13,7 @@ import {
 } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { FindOptions } from "sequelize";
 
 import { ProductsService } from "./products.service";
 import { ProductAttributeService } from "src/product-attribute/product-attribute.service";
@@ -22,6 +23,7 @@ import { Product } from "./product.model";
 import { imageStorage } from "utils/imageStorage";
 
 import { AttributeIdValuePair } from "types/attribute-value-pair.interface";
+
 import { UpdateProductControllerDto } from "./dto/updateProduct.dto";
 import { CreateProductControllerDto } from "./dto/createProductController.dto";
 import { PaginationDto } from "./dto/pagination.dto";
@@ -37,9 +39,9 @@ export class ProductsController {
 	@ApiOperation({ description: "Getting all products" })
 	@ApiResponse({ type: [Product] })
 	@Get("/admin")
-	async getAll() {
+	async getAll(@Query() findOptions: FindOptions<Product>) {
 		try {
-			const products = await this.productsService.getAllProducts();
+			const products = await this.productsService.getAllProducts(findOptions);
 			return products;
 		} catch (error) {
 			throw new InternalServerErrorException("Error while fetching all products");
