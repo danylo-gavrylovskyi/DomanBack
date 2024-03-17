@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
+import { OrderProduct } from "src/order-product/order-product.model";
 
 interface OrderCreationAttr {
 	firstName: string;
@@ -60,4 +61,7 @@ export class Order extends Model<Order, OrderCreationAttr> {
 		allowNull: false,
 	})
 	totalPrice: number;
+
+	@HasMany(() => OrderProduct)
+	orderProducts: OrderProduct[];
 }

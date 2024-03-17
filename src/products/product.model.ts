@@ -8,6 +8,7 @@ import {
 	ForeignKey,
 	HasMany,
 } from "sequelize-typescript";
+
 import { ProductAttribute } from "src/product-attribute/product-attribute.model";
 import { Subcategory } from "src/subcategories/subcategory.model";
 

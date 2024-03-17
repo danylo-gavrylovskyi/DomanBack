@@ -1,8 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
-import { Order } from "./order.model";
-import { CreateOrderDto } from "./createOrder.dto";
+
 import { OrderProductService } from "src/order-product/order-product.service";
+
+import { Order } from "./order.model";
+import { Product } from "src/products/product.model";
+import { OrderProduct } from "src/order-product/order-product.model";
+
+import { CreateOrderDto } from "./createOrder.dto";
+import { PaginationDto } from "src/products/dto/pagination.dto";
 
 @Injectable()
 export class OrdersService {
@@ -25,5 +31,22 @@ export class OrdersService {
 		});
 
 		return order;
+	}
+
+	async getOrdersWithPagination({ page = "1", perPage = "10" }: PaginationDto) {
+		return this.ordersRepository.findAndCountAll({
+			limit: +perPage,
+			offset: (+page - 1) * +perPage,
+			include: [
+				{
+					model: OrderProduct, // Include the OrderProduct model
+					include: [
+						{
+							model: Product, // Include the associated Product model
+						},
+					],
+				},
+			],
+		});
 	}
 }

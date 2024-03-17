@@ -1,8 +1,12 @@
-import { Body, Controller, InternalServerErrorException, Post } from "@nestjs/common";
-import { OrdersService } from "./orders.service";
+import { Body, Controller, Get, InternalServerErrorException, Post, Query } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+
+import { OrdersService } from "./orders.service";
+
 import { Order } from "./order.model";
+
 import { CreateOrderDto } from "./createOrder.dto";
+import { PaginationDto } from "src/products/dto/pagination.dto";
 
 @ApiTags("Orders")
 @Controller("orders")
@@ -18,6 +22,18 @@ export class OrdersController {
 			return order;
 		} catch (error) {
 			throw new InternalServerErrorException("Error while creating order");
+		}
+	}
+
+	@ApiOperation({ description: "Getting all orders with pagination" })
+	@ApiResponse({ type: Order })
+	@Get()
+	async getAllWithPagination(@Query() queryParams: PaginationDto) {
+		try {
+			const orders = await this.ordersService.getOrdersWithPagination(queryParams);
+			return orders;
+		} catch (error) {
+			throw new InternalServerErrorException("Error while getting orders with pagination");
 		}
 	}
 }
