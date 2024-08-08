@@ -9,6 +9,7 @@ import { OrderProduct } from "src/order-product/order-product.model";
 
 import { CreateOrderDto } from "./createOrder.dto";
 import { PaginationDto } from "src/products/dto/pagination.dto";
+import { GetByPhoneNumberPaginationDto } from "./getByPhoneNumberPagination.dto";
 
 @Injectable()
 export class OrdersService {
@@ -37,6 +38,28 @@ export class OrdersService {
 		return this.ordersRepository.findAndCountAll({
 			limit: +perPage,
 			offset: (+page - 1) * +perPage,
+			include: [
+				{
+					model: OrderProduct, // Include the OrderProduct model
+					include: [
+						{
+							model: Product, // Include the associated Product model
+						},
+					],
+				},
+			],
+		});
+	}
+
+	getOrdersByPhoneNumberPagination({
+		page = "1",
+		perPage = "10",
+		phoneNumber,
+	}: GetByPhoneNumberPaginationDto) {
+		return this.ordersRepository.findAndCountAll({
+			limit: +perPage,
+			offset: (+page - 1) * +perPage,
+			where: { phoneNumber },
 			include: [
 				{
 					model: OrderProduct, // Include the OrderProduct model

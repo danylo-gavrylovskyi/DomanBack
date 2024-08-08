@@ -1,4 +1,4 @@
-import { IsEmail, IsNumber, IsOptional, IsString, Length } from "class-validator";
+import { IsEmail, IsNumber, IsString, Length } from "class-validator";
 import { OrderedProduct } from "types/ordered-product.interface";
 
 export class CreateOrderDto {
