@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
+import * as nodemailer from "nodemailer";
 
 import { OrderProductService } from "src/order-product/order-product.service";
 
@@ -30,6 +31,8 @@ export class OrdersService {
 				quantity: obj.quantity,
 			});
 		});
+
+		this.notifyAdmin(order);
 
 		return order;
 	}
@@ -71,5 +74,28 @@ export class OrdersService {
 				},
 			],
 		});
+	}
+
+	private async notifyAdmin(order: Order) {
+		const transporter = nodemailer.createTransport({
+			service: "gmail",
+			auth: {
+				user: process.env.USER,
+				pass: process.env.PASS,
+			},
+		});
+
+		const mailOptions = {
+			from: process.env.FROM,
+			to: process.env.TO,
+			subject: `New Order #${order.id} Placed`,
+			text: `An order with ID #${order.id} has been placed. Please check the admin panel for details.`,
+		};
+
+		try {
+			await transporter.sendMail(mailOptions);
+		} catch (error) {
+			console.error("Failed to send notification email:", error);
+		}
 	}
 }
