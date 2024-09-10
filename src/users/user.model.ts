@@ -37,7 +37,7 @@ export class User extends Model<User, UserCreationAttr> {
 	})
 	lastName: string;
 
-	@ApiProperty({ example: "Вася", description: "User's first name" })
+	@ApiProperty({ example: "068 000 0000", description: "User's phone number" })
 	@Column({
 		type: DataType.STRING,
 		unique: true,

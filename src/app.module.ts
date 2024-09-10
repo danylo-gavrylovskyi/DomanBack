@@ -12,6 +12,7 @@ import { OrdersModule } from "./orders/orders.module";
 import { UsersModule } from "./users/users.module";
 import { OrderProductModule } from "./order-product/order-product.module";
 import { AuthModule } from "./auth/auth.module";
+import { CompanyDetailsModule } from "./company-details/company-details.module";
 
 import { Product } from "./products/product.model";
 import { Category } from "./categories/category.model";
@@ -20,6 +21,7 @@ import { Attribute } from "./attributes/attribute.model";
 import { ProductAttribute } from "./product-attribute/product-attribute.model";
 import { OrderProduct } from "./order-product/order-product.model";
 import { Order } from "./orders/order.model";
+import { CompanyDetails } from "./company-details/company-details.model";
 
 @Module({
 	imports: [
@@ -33,7 +35,16 @@ import { Order } from "./orders/order.model";
 			username: process.env.POSTGRES_USERNAME,
 			password: process.env.POSTGRES_PASSWORD,
 			database: process.env.POSTGRES_DATABASE,
-			models: [Product, Category, Subcategory, Attribute, ProductAttribute, OrderProduct, Order],
+			models: [
+				Product,
+				Category,
+				Subcategory,
+				Attribute,
+				ProductAttribute,
+				OrderProduct,
+				Order,
+				CompanyDetails,
+			],
 			autoLoadModels: true,
 		}),
 		ProductsModule,
@@ -46,6 +57,7 @@ import { Order } from "./orders/order.model";
 		OrdersModule,
 		OrderProductModule,
 		AuthModule,
+		CompanyDetailsModule,
 	],
 	controllers: [],
 	providers: [],
