@@ -9,7 +9,7 @@ services:
     ports:
       - "${PORT}:3000"
     env_file:
-      - .env
+      - ./backend/.env
     depends_on:
       - db
 
@@ -19,7 +19,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      -"${FRONTEND_PORT}:3000"
+      - "${FRONTEND_PORT}:3000"
     depends_on:
       - backend
 
@@ -48,3 +48,6 @@ services:
     depends_on:
       - frontend
       - backend
+
+volumes:
+  postgres-data:
