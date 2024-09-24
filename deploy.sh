@@ -2,15 +2,13 @@
 
 BACKEND_REPO_URL="https://github.com/danylo-gavrylovskyi/DomanBack"
 FRONTEND_REPO_URL="https://github.com/danylo-gavrylovskyi/DomanFront"
-PROJECT_DIR="./doman"
+PROJECT_DIR="doman"
 BACKEND_DIR="$PROJECT_DIR/backend"
 FRONTEND_DIR="$PROJECT_DIR/frontend"
 DOCKER_COMPOSE_FILE="$PROJECT_DIR/backend/docker-compose.yml"
-NGINX_CONF_FILE="$PROJECT_DIR/backend/nginx/nginx.conf"
 
 NODE_VERSION="18.x"
-DOCKER_VERSION="latest"
-DOCKER_COMPOSE_VERSION="latest"
+DOCKER_COMPOSE_VERSION="1.29.2"
 
 install_docker() {
     echo "Installing Docker..."
@@ -54,6 +52,7 @@ clone_backend_repo() {
         git pull origin main
     else
         git clone $BACKEND_REPO_URL $BACKEND_DIR
+        mv docker-compose.yml ..
     fi
 }
 
