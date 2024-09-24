@@ -10,7 +10,7 @@ export class CompanyDetailsService {
 	constructor(@InjectModel(CompanyDetails) private companyDetailsRepo: typeof CompanyDetails) {}
 
 	getAllCompanyDetails() {
-		return this.companyDetailsRepo.findAll();
+		return this.companyDetailsRepo.findOne({ where: { id: 1 } }); // we have only one row here
 	}
 
 	async updateCompanyDetails(dto: UpdateCompanyDetailsDto) {

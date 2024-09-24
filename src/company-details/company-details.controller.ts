@@ -11,7 +11,7 @@ export class CompanyDetailsController {
 	constructor(private companyDetailsService: CompanyDetailsService) {}
 
 	@ApiOperation({ summary: "Getting all info about company" })
-	@ApiResponse({ type: [String] })
+	@ApiResponse({ type: CompanyDetails })
 	@Get()
 	async getAll() {
 		try {
