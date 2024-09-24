@@ -6,6 +6,7 @@
 
 # private
 .env
+/nginx/ssl
 
 # Logs
 logs
