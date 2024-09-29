@@ -52,6 +52,8 @@ clone_backend_repo() {
         git pull origin main
     else
         git clone $BACKEND_REPO_URL $BACKEND_DIR
+        echo "Moving docker-compose to root folder..."
+        cd ~/$BACKEND_DIR
         mv docker-compose.yml ..
     fi
 }
@@ -63,14 +65,15 @@ clone_frontend_repo() {
         cd $FRONTEND_DIR
         git pull origin main
     else
+        cd ~
         git clone $FRONTEND_REPO_URL $FRONTEND_DIR
     fi
 }
 
 start_docker_containers() {
     echo "Starting Docker containers..."
-    cd $PROJECT_DIR
-    docker-compose -f $DOCKER_COMPOSE_FILE up -d
+    cd ~
+    docker-compose --env-file doman/backend/.env -f $DOCKER_COMPOSE_FILE up -d
 }
 
 install_git
